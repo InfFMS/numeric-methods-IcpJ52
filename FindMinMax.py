@@ -2,12 +2,18 @@ import numpy as np
 
 n1 = float(input())
 n2 = float(input())
-y1 = float(input())  # Горизонтальная прямая, на которой расположена точка старта
-y2 = float(input())  # Горизонтальная прямая, на которой расположена точка финиша
+y1 = float(input())
+y2 = float(input())
+x1 = float(input())
+x2 = float(input())
 
 
-def find_min_distance(x, n1=n1, n2=n2, y1=y1, y2=y2):
-    return y1 * n1 / np.sin(x) + y2 * n2 / np.sqrt(1 - n1 ** 2 / n2 ** 2 * np.cos(x) ** 2)
+def f1(x, n1=n1, n2=n2, y1=y1, y2=y2, x1=x1, x2=x2):
+    return n1 * (x - x1) / np.sqrt(y1 ** 2 + (x - x1) ** 2) - n2 * (x2 - x) / np.sqrt(y2 ** 2 + (x2 - x) ** 2)
+
+
+def f2(x, n1=n1, n2=n2, y1=y1, y2=y2, x1=x1, x2=x2):
+    return n1 * np.sqrt(y1 ** 2 + (x - x1) ** 2) + n2 * np.sqrt(y2 ** 2 + (x2 - x) ** 2)
 
 
 def find_min(a, b, f, eps):
@@ -21,4 +27,15 @@ def find_min(a, b, f, eps):
     return (a + b) / 2
 
 
-print(find_min(0, np.pi / 2, find_min_distance, 0.01))
+def solve_equation(a, b, f, eps):
+    while b - a >= 2 * eps:
+        c = (a + b) / 2
+        if f(c) * f(a) < 0:
+            b = c
+        else:
+            a = c
+    return c
+
+
+print(find_min(x1, x2, f2, 0.01))
+print(solve_equation(x1, x2, f1, 0.01))
